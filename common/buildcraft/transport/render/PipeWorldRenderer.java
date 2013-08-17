@@ -26,27 +26,21 @@ public class PipeWorldRenderer implements ISimpleBlockRenderingHandler {
 
 	/**
 	 * Mirrors the array on the Y axis by calculating offsets from 0.5F
-	 * 
+	 *
 	 * @param targetArray
 	 */
 	private void mirrorY(float[][] targetArray) {
 		float temp = targetArray[1][0];
-		targetArray[1][0] = (targetArray[1][1] - 0.5F) * -1F + 0.5F; // 1 ->
-																		// 0.5F
-																		// ->
-																		// -0.5F
-																		// -> 0F
-		targetArray[1][1] = (temp - 0.5F) * -1F + 0.5F; // 0 -> -0.5F -> 0.5F ->
-														// 1F
+		targetArray[1][0] = (targetArray[1][1] - 0.5F) * -1F + 0.5F; // 1 -> 0.5F -> -0.5F -> 0F
+		targetArray[1][1] = (temp - 0.5F) * -1F + 0.5F; // 0 -> -0.5F -> 0.5F -> 1F
 	}
 
 	/**
 	 * Shifts the coordinates around effectivly rotating something. Zero state
 	 * is DOWN then -> NORTH -> WEST Note - To obtain Pos, do a mirrorY() before
 	 * rotating
-	 * 
-	 * @param targetArray
-	 *            the array that should be rotated
+	 *
+	 * @param targetArray the array that should be rotated
 	 */
 	private void rotate(float[][] targetArray) {
 		for (int i = 0; i < 2; i++) {
@@ -58,8 +52,7 @@ public class PipeWorldRenderer implements ISimpleBlockRenderingHandler {
 	}
 
 	/**
-	 * @param targetArray
-	 *            the array that should be transformed
+	 * @param targetArray the array that should be transformed
 	 * @param direction
 	 */
 	private void transform(float[][] targetArray, ForgeDirection direction) {
@@ -74,9 +67,8 @@ public class PipeWorldRenderer implements ISimpleBlockRenderingHandler {
 
 	/**
 	 * Clones both dimensions of a float[][]
-	 * 
-	 * @param source
-	 *            the float[][] to deepClone
+	 *
+	 * @param source the float[][] to deepClone
 	 * @return
 	 */
 	private float[][] deepClone(float[][] source) {
@@ -88,12 +80,12 @@ public class PipeWorldRenderer implements ISimpleBlockRenderingHandler {
 	}
 
 	private void renderAllFaceExeptAxe(RenderBlocks renderblocks, Block block, Icon icon, int x, int y, int z, char axe) {
-		float minX = (float) block.getBlockBoundsMinX();
-		float minY = (float) block.getBlockBoundsMinY();
-		float minZ = (float) block.getBlockBoundsMinZ();
-		float maxX = (float) block.getBlockBoundsMaxX();
-		float maxY = (float) block.getBlockBoundsMaxY();
-		float maxZ = (float) block.getBlockBoundsMaxZ();
+		float minX = (float) renderblocks.renderMinX;
+		float minY = (float) renderblocks.renderMinY;
+		float minZ = (float) renderblocks.renderMinZ;
+		float maxX = (float) renderblocks.renderMaxX;
+		float maxY = (float) renderblocks.renderMaxY;
+		float maxZ = (float) renderblocks.renderMaxZ;
 		if (axe != 'x') {
 			renderTwoWayXFace(renderblocks, block, icon, x, y, z, minY, minZ, maxY, maxZ, minX);
 			renderTwoWayXFace(renderblocks, block, icon, x, y, z, minY, minZ, maxY, maxZ, maxX);
@@ -110,20 +102,17 @@ public class PipeWorldRenderer implements ISimpleBlockRenderingHandler {
 
 	private void renderTwoWayXFace(RenderBlocks renderblocks, Block block, Icon icon, int xCoord, int yCoord, int zCoord, float minY, float minZ, float maxY, float maxZ, float x) {
 		renderblocks.setRenderBounds(x, minY, minZ, x, maxY, maxZ);
-		renderblocks.renderFaceXNeg(block, xCoord, yCoord, zCoord, icon);
-		renderblocks.renderFaceXPos(block, xCoord, yCoord, zCoord, icon);
+		renderblocks.renderStandardBlock(block, xCoord, yCoord, zCoord);
 	}
 
 	private void renderTwoWayYFace(RenderBlocks renderblocks, Block block, Icon icon, int xCoord, int yCoord, int zCoord, float minX, float minZ, float maxX, float maxZ, float y) {
 		renderblocks.setRenderBounds(minX, y, minZ, maxX, y, maxZ);
-		renderblocks.renderFaceYNeg(block, xCoord, yCoord, zCoord, icon);
-		renderblocks.renderFaceYPos(block, xCoord, yCoord, zCoord, icon);
+		renderblocks.renderStandardBlock(block, xCoord, yCoord, zCoord);
 	}
 
 	private void renderTwoWayZFace(RenderBlocks renderblocks, Block block, Icon icon, int xCoord, int yCoord, int zCoord, float minX, float minY, float maxX, float maxY, float z) {
 		renderblocks.setRenderBounds(minX, minY, z, maxX, maxY, z);
-		renderblocks.renderFaceZNeg(block, xCoord, yCoord, zCoord, icon);
-		renderblocks.renderFaceZPos(block, xCoord, yCoord, zCoord, icon);
+		renderblocks.renderStandardBlock(block, xCoord, yCoord, zCoord);
 	}
 
 	public void renderPipe(RenderBlocks renderblocks, IBlockAccess iblockaccess, Block block, IPipeRenderState renderState, int x, int y, int z) {
@@ -333,8 +322,7 @@ public class PipeWorldRenderer implements ISimpleBlockRenderingHandler {
 		zeroState[2][0] = Utils.pipeMinPos;
 		zeroState[2][1] = Utils.pipeMaxPos;
 
-		state.currentTexture = BuildCraftTransport.instance.pipeIconProvider.getIcon(PipeIconProvider.TYPE.PipeStructureCobblestone.ordinal()); // Structure
-																																				// Pipe
+		state.currentTexture = BuildCraftTransport.instance.pipeIconProvider.getIcon(PipeIconProvider.TYPE.PipeStructureCobblestone.ordinal()); // Structure Pipe
 
 		for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
 			if (state.facadeMatrix.getFacadeBlockId(direction) != 0 && !state.pipeConnectionMatrix.isConnected(direction)) {
@@ -362,8 +350,7 @@ public class PipeWorldRenderer implements ISimpleBlockRenderingHandler {
 		zeroState[2][0] = 0.25F + zFightOffset;
 		zeroState[2][1] = 0.75F - zFightOffset;
 
-		state.currentTexture = BuildCraftTransport.instance.pipeIconProvider.getIcon(PipeIconProvider.TYPE.PipeStructureCobblestone.ordinal()); // Structure
-																																				// Pipe
+		state.currentTexture = BuildCraftTransport.instance.pipeIconProvider.getIcon(PipeIconProvider.TYPE.PipeStructureCobblestone.ordinal()); // Structure Pipe
 
 		for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
 			if (state.plugMatrix.isConnected(direction)) {
@@ -385,8 +372,7 @@ public class PipeWorldRenderer implements ISimpleBlockRenderingHandler {
 		zeroState[2][0] = 0.25F + 0.125F / 2;
 		zeroState[2][1] = 0.75F - 0.125F / 2;
 
-		state.currentTexture = BuildCraftTransport.instance.pipeIconProvider.getIcon(PipeIconProvider.TYPE.PipeStructureCobblestone.ordinal()); // Structure
-																																				// Pipe
+		state.currentTexture = BuildCraftTransport.instance.pipeIconProvider.getIcon(PipeIconProvider.TYPE.PipeStructureCobblestone.ordinal()); // Structure Pipe
 
 		for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
 			if (state.plugMatrix.isConnected(direction)) {
@@ -400,7 +386,8 @@ public class PipeWorldRenderer implements ISimpleBlockRenderingHandler {
 
 	}
 
-	private void pipeWireRender(RenderBlocks renderblocks, Block block, PipeRenderState state, float cx, float cy, float cz, IPipe.WireColor color, int x, int y, int z) {
+	private void pipeWireRender(RenderBlocks renderblocks, Block block, PipeRenderState state, float cx, float cy, float cz, IPipe.WireColor color, int x,
+			int y, int z) {
 
 		float minX = Utils.pipeMinPos;
 		float minY = Utils.pipeMinPos;
@@ -491,26 +478,30 @@ public class PipeWorldRenderer implements ISimpleBlockRenderingHandler {
 		// Z render
 
 		if (minZ != Utils.pipeMinPos || maxZ != Utils.pipeMaxPos || !found) {
-			renderblocks.setRenderBounds(cx == Utils.pipeMinPos ? cx - 0.05F : cx, cy == Utils.pipeMinPos ? cy - 0.05F : cy, minZ, cx == Utils.pipeMinPos ? cx : cx + 0.05F, cy == Utils.pipeMinPos ? cy : cy + 0.05F, maxZ);
+			renderblocks.setRenderBounds(cx == Utils.pipeMinPos ? cx - 0.05F : cx, cy == Utils.pipeMinPos ? cy - 0.05F : cy, minZ, cx == Utils.pipeMinPos ? cx
+					: cx + 0.05F, cy == Utils.pipeMinPos ? cy : cy + 0.05F, maxZ);
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
 
 		// X render
 
 		if (minX != Utils.pipeMinPos || maxX != Utils.pipeMaxPos || !found) {
-			renderblocks.setRenderBounds(minX, cy == Utils.pipeMinPos ? cy - 0.05F : cy, cz == Utils.pipeMinPos ? cz - 0.05F : cz, maxX, cy == Utils.pipeMinPos ? cy : cy + 0.05F, cz == Utils.pipeMinPos ? cz : cz + 0.05F);
+			renderblocks.setRenderBounds(minX, cy == Utils.pipeMinPos ? cy - 0.05F : cy, cz == Utils.pipeMinPos ? cz - 0.05F : cz, maxX, cy == Utils.pipeMinPos ? cy
+					: cy + 0.05F, cz == Utils.pipeMinPos ? cz : cz + 0.05F);
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
 
 		// Y render
 
 		if (minY != Utils.pipeMinPos || maxY != Utils.pipeMaxPos || !found) {
-			renderblocks.setRenderBounds(cx == Utils.pipeMinPos ? cx - 0.05F : cx, minY, cz == Utils.pipeMinPos ? cz - 0.05F : cz, cx == Utils.pipeMinPos ? cx : cx + 0.05F, maxY, cz == Utils.pipeMinPos ? cz : cz + 0.05F);
+			renderblocks.setRenderBounds(cx == Utils.pipeMinPos ? cx - 0.05F : cx, minY, cz == Utils.pipeMinPos ? cz - 0.05F : cz, cx == Utils.pipeMinPos ? cx
+					: cx + 0.05F, maxY, cz == Utils.pipeMinPos ? cz : cz + 0.05F);
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
 
 		if (center || !found) {
-			renderblocks.setRenderBounds(cx == Utils.pipeMinPos ? cx - 0.05F : cx, cy == Utils.pipeMinPos ? cy - 0.05F : cy, cz == Utils.pipeMinPos ? cz - 0.05F : cz, cx == Utils.pipeMinPos ? cx : cx + 0.05F, cy == Utils.pipeMinPos ? cy : cy + 0.05F, cz == Utils.pipeMinPos ? cz : cz + 0.05F);
+			renderblocks.setRenderBounds(cx == Utils.pipeMinPos ? cx - 0.05F : cx, cy == Utils.pipeMinPos ? cy - 0.05F : cy, cz == Utils.pipeMinPos ? cz - 0.05F : cz,
+					cx == Utils.pipeMinPos ? cx : cx + 0.05F, cy == Utils.pipeMinPos ? cy : cy + 0.05F, cz == Utils.pipeMinPos ? cz : cz + 0.05F);
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
 
