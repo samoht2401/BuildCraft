@@ -102,17 +102,20 @@ public class PipeWorldRenderer implements ISimpleBlockRenderingHandler {
 
 	private void renderTwoWayXFace(RenderBlocks renderblocks, Block block, Icon icon, int xCoord, int yCoord, int zCoord, float minY, float minZ, float maxY, float maxZ, float x) {
 		renderblocks.setRenderBounds(x, minY, minZ, x, maxY, maxZ);
-		renderblocks.renderStandardBlock(block, xCoord, yCoord, zCoord);
+		renderblocks.renderFaceXNeg(block, xCoord, yCoord, zCoord, icon);
+		renderblocks.renderFaceXPos(block, xCoord, yCoord, zCoord, icon);
 	}
 
 	private void renderTwoWayYFace(RenderBlocks renderblocks, Block block, Icon icon, int xCoord, int yCoord, int zCoord, float minX, float minZ, float maxX, float maxZ, float y) {
 		renderblocks.setRenderBounds(minX, y, minZ, maxX, y, maxZ);
-		renderblocks.renderStandardBlock(block, xCoord, yCoord, zCoord);
+		renderblocks.renderFaceYNeg(block, xCoord, yCoord, zCoord, icon);
+		renderblocks.renderFaceYPos(block, xCoord, yCoord, zCoord, icon);
 	}
 
 	private void renderTwoWayZFace(RenderBlocks renderblocks, Block block, Icon icon, int xCoord, int yCoord, int zCoord, float minX, float minY, float maxX, float maxY, float z) {
 		renderblocks.setRenderBounds(minX, minY, z, maxX, maxY, z);
-		renderblocks.renderStandardBlock(block, xCoord, yCoord, zCoord);
+		renderblocks.renderFaceZNeg(block, xCoord, yCoord, zCoord, icon);
+		renderblocks.renderFaceZPos(block, xCoord, yCoord, zCoord, icon);
 	}
 
 	public void renderPipe(RenderBlocks renderblocks, IBlockAccess iblockaccess, Block block, IPipeRenderState renderState, int x, int y, int z) {
